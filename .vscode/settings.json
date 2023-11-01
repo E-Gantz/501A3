@@ -1,6 +1,12 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "c:\\JUNIT\\jdom-2.0.6.1.jar"
+        "c:\\JUNIT\\jdom-2.0.6.1.jar",
+        "c:\\JUNIT\\jdom-2.0.6.1-contrib.jar",
+        "c:\\JUNIT\\jdom-2.0.6.1-contrib-sources.jar",
+        "c:\\JUNIT\\jdom-2.0.6.1-javadoc.jar",
+        "c:\\JUNIT\\jdom-2.0.6.1-junit.jar",
+        "c:\\JUNIT\\jdom-2.0.6.1-junit-sources.jar",
+        "c:\\JUNIT\\jdom-2.0.6.1-sources.jar"
     ]
 }
