@@ -3,15 +3,12 @@ import java.util.ArrayList;
 public class ObjectCreator {
     TextUI tex;
     ArrayList<Object> objects;
-    public static void main(String[] args) {
-        ObjectCreator objC = new ObjectCreator();
-        objC.createObjects();
-    }
 
-    public void createObjects(){
+    public ArrayList<Object> createObjects(){
         this.tex = new TextUI();
         this.objects = new ArrayList<Object>();
         whichObject();
+        return objects;
     }
 
     public void whichObject(){
