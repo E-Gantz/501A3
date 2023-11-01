@@ -1,19 +1,21 @@
-import java.util.ArrayList;
 
 public class Sender {
     public static void main(String[] args) {
         Sender sender = new Sender();
-        sender.createAndSerialize();
+        org.jdom2.Document doc = sender.createAndSerialize();
+        sender.send(doc);
     }
 
-    public void createAndSerialize(){
+    public org.jdom2.Document createAndSerialize(){
         ObjectCreator objC = new ObjectCreator();
-        objC.createObjects();
+        Object obj = objC.createObject();
         Serializer serializer = new Serializer();
-        ArrayList<org.jdom2.Document> docs = new ArrayList<org.jdom2.Document>();
-        for(Object obj : objC.objects){
-            docs.add(serializer.serialize(obj));
-        }
+        org.jdom2.Document doc = serializer.serialize(obj);
+        return doc;
+    }
+
+    public void send(org.jdom2.Document doc){
+        //socket stuff
     }
     
 }

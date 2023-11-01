@@ -1,1 +1,3 @@
-none yet.
+My initial design was to allow the user to create multiple separate objects, and then have each of them serialized. 
+I then realised that the " Allow the user to create one or more objects from a selection of objects using some sort of text-based menu system or GUI" part of the assignment description probably meant that we create one object to serialize, and it can contain multiple other objects.
+So, my first major refactoring was removing the user's ability to create multiple of the 5 types of objects, which involved removing loops and arraylists, minor renaming, and changing return types. (commit 4)

@@ -1,48 +1,38 @@
-import java.util.ArrayList;
 
 public class ObjectCreator {
     TextUI tex;
-    ArrayList<Object> objects;
+    Object object;
 
-    public ArrayList<Object> createObjects(){
+    public Object createObject(){
         this.tex = new TextUI();
-        this.objects = new ArrayList<Object>();
         whichObject();
-        return objects;
+        return object;
     }
 
     public void whichObject(){
-        while(true){
-            tex.showObjOptions();
-            int objChoice = tex.chooseIntOption(1, 5);
-            tex.showCreationOptions();
-            int valChoice = tex.chooseIntOption(1, 2);
-            boolean custom = false;
-            if(valChoice == 2){
-                custom = true;
-            }
+        tex.showObjOptions();
+        int objChoice = tex.chooseIntOption(1, 5);
+        tex.showCreationOptions();
+        int valChoice = tex.chooseIntOption(1, 2);
+        boolean custom = false;
+        if(valChoice == 2){
+            custom = true;
+        }
 
-            if (objChoice == 1){
-                createPrimOb(custom);
-            }
-            else if (objChoice == 2){
-                //
-            }
-            else if (objChoice == 3){
-                //
-            }
-            else if (objChoice == 4){
-                //
-            }
-            else if (objChoice == 5){
-                //
-            }
-
-            tex.goAgain();
-            int again = tex.chooseIntOption(1, 2);
-            if (again == 2){
-                break;
-            }
+        if (objChoice == 1){
+            createPrimOb(custom);
+        }
+        else if (objChoice == 2){
+            //
+        }
+        else if (objChoice == 3){
+            //
+        }
+        else if (objChoice == 4){
+            //
+        }
+        else if (objChoice == 5){
+            //
         }
     }
 
@@ -61,7 +51,7 @@ public class ObjectCreator {
                     int x = Integer.parseInt(obVars[0]);
                     double y = Double.parseDouble(obVars[1]);
                     boolean z = parseBool(obVars[2]);
-                    objects.add(new primOb(x, y, z));
+                    object = new primOb(x, y, z);
                     break;
                 } catch (Exception e) {
                     System.out.println("There was an issue parsing your input.");
@@ -70,7 +60,7 @@ public class ObjectCreator {
             }
         }
         else{
-            objects.add(new primOb());
+            object = new primOb();
         }
     }
 
@@ -79,7 +69,7 @@ public class ObjectCreator {
             //
         }
         else{
-            //objects.add(new //);
+            //object = new //;
         }
     }*/
 
@@ -88,7 +78,7 @@ public class ObjectCreator {
             //
         }
         else{
-            //objects.add(new //);
+            //object = new //;
         }
     }*/
 
@@ -97,7 +87,7 @@ public class ObjectCreator {
             //
         }
         else{
-            //objects.add(new //);
+            //object = new //;
         }
     }*/
 
@@ -106,7 +96,7 @@ public class ObjectCreator {
             //
         }
         else{
-            //objects.add(new //);
+            //object = new //;
         }
     }*/
 
