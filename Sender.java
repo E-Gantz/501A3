@@ -16,6 +16,8 @@ public class Sender {
 
     public void send(org.jdom2.Document doc){
         //socket stuff
+        Receiver receiver = new Receiver();
+        receiver.listen(doc);
     }
     
 }

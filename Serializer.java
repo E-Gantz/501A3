@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 
 public class Serializer{
-    IdentityHashMap<Object, Integer> iMap;
+    IdentityHashMap<Integer,Object> iMap;
 
     public org.jdom2.Document serialize(Object obj){
         iMap = new IdentityHashMap<>();
@@ -27,7 +27,7 @@ public class Serializer{
         Element object = new Element("object");
         object.setAttribute("class", classObject.getName());
         object.setAttribute("id", Integer.toString(iMap.size()));
-        iMap.put(obj, iMap.size());
+        iMap.put(iMap.size(), obj);
         doc.getRootElement().addContent(object);
 
         serializeFields(classObject, obj, recurseObjects, object);
