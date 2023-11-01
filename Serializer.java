@@ -17,9 +17,8 @@ public class Serializer{
         Document doc = new Document(root);
         serializeObject(obj, doc, recurseObjects);
 
-        XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
-        System.out.println(xmlOut.outputString(doc));
         
+        printDoc(doc);
         return doc;
     }
 
@@ -70,5 +69,10 @@ public class Serializer{
                 //object stuff
             }
         }
+    }
+
+    public void printDoc(org.jdom2.Document doc){
+        XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
+        System.out.println(xmlOut.outputString(doc));
     }
 }
