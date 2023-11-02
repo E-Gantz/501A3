@@ -3,7 +3,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 

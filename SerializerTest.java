@@ -1,11 +1,10 @@
 import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 public class SerializerTest {
     final PrintStream sOut = System.out;
     final ByteArrayOutputStream captcha = new ByteArrayOutputStream();
@@ -41,6 +40,8 @@ public class SerializerTest {
         primOb pob = new primOb();
         Serializer ser = new Serializer();
         ser.printDoc(ser.serialize(pob));
+        assertTrue(captcha.toString().contains("<value>1</value>"));
         assertTrue(captcha.toString().contains("<value>1.0</value>"));
+        assertTrue(captcha.toString().contains("<value>true</value>"));
     }
 }
