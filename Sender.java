@@ -1,3 +1,11 @@
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 public class Sender {
     public static void main(String[] args) {
@@ -17,9 +25,27 @@ public class Sender {
     }
 
     public void send(org.jdom2.Document doc){
-        //socket stuff
-        Receiver receiver = new Receiver();
-        receiver.listen(doc);
+        //Taken from Kimiya's tutorial session 13 example
+        String address = "localhost";
+        int port = 2023;
+        try {
+            Socket socket = new Socket(address, port);
+            OutputStream outputStream = socket.getOutputStream();
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+
+            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+            xmlOutputter.output(doc, byteArrayOutputStream);
+            byte[] documentBytes = byteArrayOutputStream.toByteArray();
+
+            bufferedOutputStream.write(documentBytes);
+            
+            bufferedOutputStream.flush();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
 }
