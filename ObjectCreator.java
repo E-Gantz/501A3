@@ -41,9 +41,7 @@ public class ObjectCreator {
             while(true){
                 tex.showPrimObVars();
                 String input = tex.chooseStringOption().trim();
-                System.out.println("input is " + input);
                 String[] obVars = input.split(" ");
-                System.out.println("length is " + obVars.length);
                 if(obVars.length != 3){
                     continue;
                 }

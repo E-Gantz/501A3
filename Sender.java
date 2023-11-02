@@ -11,6 +11,8 @@ public class Sender {
         Object obj = objC.createObject();
         Serializer serializer = new Serializer();
         org.jdom2.Document doc = serializer.serialize(obj);
+        System.out.println("Sending: ");
+        serializer.printDoc(doc);
         return doc;
     }
 

@@ -16,9 +16,6 @@ public class Serializer{
         Element root = new Element("serialized");
         Document doc = new Document(root);
         serializeObject(obj, doc, recurseObjects);
-
-        
-        printDoc(doc);
         return doc;
     }
 

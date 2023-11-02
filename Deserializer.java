@@ -1,4 +1,5 @@
 import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 
@@ -10,13 +11,13 @@ public class Deserializer {
     
     public Object deserialize(org.jdom2.Document doc){
         //SAXBuilder sax = new SAXBuilder();
+        ArrayList<Object> instances = new ArrayList<Object>();
         iMap = new IdentityHashMap<>();
         Element root = doc.getRootElement();
         List<Element> objects = root.getChildren();
         
         for(Element object : objects){
             String className = object.getAttributeValue("class");
-            System.out.println("attempting deserialization of " + className);
             try {
                 Class objClass = Class.forName(className);
                 Constructor c = objClass.getDeclaredConstructor(null);
@@ -28,7 +29,7 @@ public class Deserializer {
                 for(Element field : fields){
                     String fieldName = field.getAttributeValue("name");
                     String declaringClass = field.getAttributeValue("declaringclass");
-                    Field fieldObj = objClass.getDeclaredField(fieldName);
+                    Field fieldObj = instance.getClass().getDeclaredField(fieldName);
                     Class fType = fieldObj.getType();
                     if(fType.isArray()){
                         //array stuff
@@ -49,6 +50,7 @@ public class Deserializer {
                         }
                     }
                 }
+                instances.add(instance);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {
@@ -67,35 +69,33 @@ public class Deserializer {
                 e.printStackTrace();
             }
         }
-        
-        
-        return new Object();
+        return instances.get(0);
     }
 
     public void primFieldSetter(Object instance, Class fType, Field fieldObj, String value){
         try {
-            if(fType.getName().equals("Integer")){
+            if(fType.getName().equals("int")){
                 fieldObj.setInt(instance, Integer.parseInt(value));
             }
-            else if(fType.getName().equals("Boolean")){
+            else if(fType.getName().equals("boolean")){
                 fieldObj.setBoolean(instance, Boolean.parseBoolean(value));
             }
-            else if(fType.getName().equals("Byte")){
+            else if(fType.getName().equals("byte")){
                 fieldObj.setByte(instance, Byte.parseByte(value));
             }
-            else if(fType.getName().equals("Short")){
+            else if(fType.getName().equals("short")){
                 fieldObj.setShort(instance, Short.parseShort(value));
             }
-            else if(fType.getName().equals("Long")){
+            else if(fType.getName().equals("long")){
                 fieldObj.setLong(instance, Long.parseLong(value));
             }
-            else if(fType.getName().equals("Float")){
+            else if(fType.getName().equals("float")){
                 fieldObj.setFloat(instance, Float.parseFloat(value));
             }
-            else if(fType.getName().equals("Double")){
+            else if(fType.getName().equals("double")){
                 fieldObj.setDouble(instance, Double.parseDouble(value));
             }
-            else if(fType.getName().equals("Character")){
+            else if(fType.getName().equals("char")){
                 fieldObj.setChar(instance, value.charAt(0));
             }
             else if(fType.getName().equals("Void")){
