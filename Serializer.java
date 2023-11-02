@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 
 public class Serializer{
-    IdentityHashMap<Integer,Object> iMap;
+    IdentityHashMap<Object, Integer> iMap;
 
     public org.jdom2.Document serialize(Object obj){
         iMap = new IdentityHashMap<>();
@@ -15,15 +15,31 @@ public class Serializer{
         Element root = new Element("serialized");
         Document doc = new Document(root);
         serializeObject(obj, doc, recurseObjects);
+        for(Object fieldObj : recurseObjects){
+            serialize(fieldObj, doc);
+        }
         return doc;
+    }
+
+    public void serialize(Object obj, org.jdom2.Document doc){
+        ArrayList<Object> recurseObjects = new ArrayList<Object>();
+        serializeObject(obj, doc, recurseObjects);
+        for(Object fieldObj : recurseObjects){
+            serialize(fieldObj, doc);
+        }
     }
 
     public void serializeObject(Object obj, Document doc, ArrayList<Object> recurseObjects){
         Class classObject = obj.getClass();
         Element object = new Element("object");
         object.setAttribute("class", classObject.getName());
-        object.setAttribute("id", Integer.toString(iMap.size()));
-        iMap.put(iMap.size(), obj);
+        if(iMap.get(obj) == null){
+            object.setAttribute("id", Integer.toString(iMap.size()));
+            iMap.put(obj, iMap.size());
+        }
+        else {
+            object.setAttribute("id", Integer.toString(iMap.get(obj)));
+        }
         doc.getRootElement().addContent(object);
 
         serializeFields(classObject, obj, recurseObjects, object);
@@ -61,8 +77,18 @@ public class Serializer{
                 }
             }
             else{
-                recurseObjects.add(field);
-                //object stuff
+                try {
+                    Object fieldValue = field.get(obj);
+                    if(iMap.get(fieldValue) == null){
+                        iMap.put(fieldValue, iMap.size());
+                        recurseObjects.add(fieldValue);
+                    }
+                    Element refElement = new Element("reference");
+                    refElement.setText(Integer.toString(iMap.get(fieldValue)));
+                    fieldElement.addContent(refElement);
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

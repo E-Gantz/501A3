@@ -39,7 +39,7 @@ public class TextUI {
     public void showObjOptions(){
         System.out.println("You may choose to create one of the following objects:");
         System.out.println("1. primOb: A simple object with only primitives for instance variables.");
-        System.out.println("2. placeholder: An object that contains references to other objects.");
+        System.out.println("2. refOb2: An object that contains references to a primOb and its parent, refOb1 (which has a reference to its child refOb2 and its own primOb)");
         System.out.println("3. placeholder: An object that contains an array of primitives.");
         System.out.println("4. placeholder: An object that contains an array of object references.");
         System.out.println("5. placeholder: An object that uses an instance of one of Java\'s collection classes to refer to several other objects");
@@ -56,6 +56,10 @@ public class TextUI {
     public void showPrimObVars(){
         System.out.println("A primOb requires 3 values: An Integer, A Double, and A Boolean");
         System.out.println("Please enter these below on one line, separated by spaces.");
+    }
+
+    public void showRefObVars(){
+        System.out.println("You will need to create two primObs, one for refOb2 and one for refOb1");
     }
 
     //show custom input instructions for the other 4 object types here

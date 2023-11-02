@@ -39,6 +39,6 @@ public class Receiver {
         Deserializer deserializer = new Deserializer();
         Object reconstructed = deserializer.deserialize(doc);
         Inspector inspectre = new Inspector();
-        inspectre.inspect(reconstructed, false);
+        inspectre.inspect(reconstructed, true);
     }
 }

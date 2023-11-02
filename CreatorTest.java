@@ -18,4 +18,11 @@ public class CreatorTest {
         assertEquals(pob.getDub(), 60.78, 0.001);
         assertTrue(!pob.getBool());
     }
+
+    @Test
+    public void refObjectDefault(){
+        refOb2 o2 = new refOb2();
+        refOb1 o1 = o2.drEvil;
+        assertTrue(o2.drEvil == o1 && o1.miniMe == o2);
+    }
 }

@@ -23,7 +23,7 @@ public class ObjectCreator {
             createPrimOb(custom);
         }
         else if (objChoice == 2){
-            //
+            createRefOb(custom);
         }
         else if (objChoice == 3){
             //
@@ -62,14 +62,39 @@ public class ObjectCreator {
         }
     }
 
-    /*public void create//(boolean custom){
+    public primOb createPrimOb(){
+        while(true){
+            tex.showPrimObVars();
+            String input = tex.chooseStringOption().trim();
+            String[] obVars = input.split(" ");
+            if(obVars.length != 3){
+                continue;
+            }
+            try {
+                int x = Integer.parseInt(obVars[0]);
+                double y = Double.parseDouble(obVars[1]);
+                boolean z = parseBool(obVars[2]);
+                return new primOb(x, y, z);
+            } catch (Exception e) {
+                System.out.println("There was an issue parsing your input.");
+                continue;
+            }
+        }
+    }
+
+    public void createRefOb(boolean custom){
         if (custom){
-            //
+            while(true){
+                tex.showRefObVars();
+                primOb prim1 = createPrimOb();
+                primOb prim2 = createPrimOb();
+                object = new refOb2(prim1, prim2);
+            }
         }
         else{
-            //object = new //;
+            object = new refOb2(new primOb(4, 50.5, false));
         }
-    }*/
+    }
 
     /*public void create//(boolean custom){
         if (custom){
@@ -151,5 +176,60 @@ class primOb{
 
     public void setBool(boolean x){
         bool=x;
+    }
+}
+
+class refOb1{
+    refOb2 miniMe;
+    primOb prim;
+
+    public refOb1(){
+        miniMe = null;
+        prim = new primOb();
+    }
+
+    public refOb1(refOb2 clone){
+        miniMe = clone;
+        prim = new primOb(); 
+    }
+
+    public refOb1(refOb2 clone, primOb custom){
+        miniMe = clone;
+        prim = custom;
+    }
+
+    public refOb1(primOb custom){
+        miniMe = null;
+        prim = custom;
+    }
+}
+
+class refOb2 extends refOb1{
+    refOb1 drEvil;
+    primOb prim;
+
+    public refOb2(){
+        drEvil = new refOb1(this);
+        prim = new primOb();
+    }
+
+    public refOb2(refOb1 dad){
+        drEvil = dad;
+        prim = new primOb();
+    }
+
+    public refOb2(refOb1 dad, primOb custom){
+        drEvil = dad;
+        prim = custom;
+    }
+
+    public refOb2(primOb custom){
+        drEvil = new refOb1(this);
+        prim = custom;
+    }
+    
+    public refOb2(primOb prim1, primOb prim2){
+        prim = prim2;
+        drEvil = new refOb1(this, prim1);
     }
 }

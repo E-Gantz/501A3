@@ -3,11 +3,11 @@ import java.util.*;
 import java.lang.reflect.*;
 
 public class Inspector {
-    ArrayList<Integer> seenObjects = new ArrayList<Integer>();
+    IdentityHashMap<Object, Integer> iMap = new IdentityHashMap<>();
 
     public void inspect(Object obj, boolean recursive){
-        if(!seenObjects.contains(obj.hashCode())){  //According to TA we want to avoid inspecting the same object twice.
-            seenObjects.add(obj.hashCode());
+        if(iMap.get(obj) == null){
+            iMap.put(obj, iMap.size());
             ArrayList<Object> recurseObjects = new ArrayList<Object>();
             ArrayList<Object> superObjects = new ArrayList<Object>();
             Class classObject = obj.getClass();
@@ -17,15 +17,13 @@ public class Inspector {
             fieldInspection(classObject, obj, recurseObjects, recursive);
 
             if (recursive){
-                System.out.println("");
-                System.out.println("Recursively Inspecting Objects in " + obj + "\n");
                 for(Object recurseObj : recurseObjects){
                     inspect(recurseObj, recursive);
                 }
             }
         }
         else {
-            System.out.println(obj + " Has already been inspected.\n");
+            //
         }
     }
 
@@ -84,9 +82,12 @@ public class Inspector {
                 }
             }
             else{
-                recurseObjects.add(field);
-                System.out.println("        Identity Hash Code: " + field.hashCode());
-                if(recursive){System.out.println("            See below for introspection");}
+                try {
+                    Object fieldValue = field.get(obj);
+                    recurseObjects.add(fieldValue);
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
