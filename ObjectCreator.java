@@ -1,3 +1,4 @@
+import java.util.Stack;
 
 public class ObjectCreator {
     TextUI tex;
@@ -345,8 +346,15 @@ class ObjArrayOb{
     }
 }
 class CollectionField{
-    //
+    Stack<Object> stack;
     CollectionField(){
-        //
+        stack = new Stack<Object>();
+        refOb2 o2 = new refOb2();
+        refOb1 o1 = o2.drEvil;
+        stack.push(o1);
+        stack.push(o2);
+        stack.push(new primOb());
+        stack.push(new primOb(3, 67.8, false));
+        stack.push(new CharArrayOb());
     }
 }

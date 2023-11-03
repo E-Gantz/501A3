@@ -4,6 +4,7 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 
 public class Serializer{
@@ -44,6 +45,11 @@ public class Serializer{
             int length = Array.getLength(obj);
             object.setAttribute("length", Integer.toString(length));
             serializeElements(classObject, obj, recurseObjects, object, length);
+        }
+        else if(obj instanceof Collection){
+            int length = ((Collection) obj).size();
+            object.setAttribute("length", Integer.toString(length));
+            serializeCollection(classObject, obj, recurseObjects, object, length);
         }
         else{
             serializeFields(classObject, obj, recurseObjects, object);
@@ -133,6 +139,18 @@ public class Serializer{
                 refElement.setText(Integer.toString(iMap.get(fieldValue)));
                 element.addContent(refElement);
             }
+        }
+    }
+
+    public void serializeCollection(Class classObject, Object obj, ArrayList<Object> recurseObjects, Element element, int length){
+       for(Object fieldValue : (Collection)obj){
+            if(iMap.get(fieldValue) == null){
+                iMap.put(fieldValue, iMap.size());
+                recurseObjects.add(fieldValue);
+            }
+            Element refElement = new Element("reference");
+            refElement.setText(Integer.toString(iMap.get(fieldValue)));
+            element.addContent(refElement);
         }
     }
 
