@@ -90,10 +90,7 @@ public class Serializer{
         else{
             try {
                 Object fieldValue = field.get(obj);
-                if(iMap.get(fieldValue) == null){
-                    iMap.put(fieldValue, iMap.size());
-                    recurseObjects.add(fieldValue);
-                }
+                checkAndAdd(fieldValue, recurseObjects);
                 addRefValElement("reference", Integer.toString(iMap.get(fieldValue)), fieldElement);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 e.printStackTrace();
@@ -111,10 +108,7 @@ public class Serializer{
         else{
             for(int i=0; i<length; i++){
                 Object fieldValue = Array.get(obj, i);
-                if(iMap.get(fieldValue) == null){
-                    iMap.put(fieldValue, iMap.size());
-                    recurseObjects.add(fieldValue);
-                }
+                checkAndAdd(fieldValue, recurseObjects);
                 addRefValElement("reference", Integer.toString(iMap.get(fieldValue)), element);
             }
         }
@@ -122,10 +116,7 @@ public class Serializer{
 
     public void serializeCollection(Class classObject, Object obj, ArrayList<Object> recurseObjects, Element element, int length){
        for(Object fieldValue : (Collection)obj){
-            if(iMap.get(fieldValue) == null){
-                iMap.put(fieldValue, iMap.size());
-                recurseObjects.add(fieldValue);
-            }
+            checkAndAdd(fieldValue, recurseObjects);
             addRefValElement("reference", Integer.toString(iMap.get(fieldValue)), element);
         }
     }
@@ -139,5 +130,12 @@ public class Serializer{
         Element refVal = new Element(elemName);
         refVal.setText(elemText);
         parent.addContent(refVal);
+    }
+
+    public void checkAndAdd(Object fieldValue, ArrayList<Object> recurseObjects){
+        if(iMap.get(fieldValue) == null){
+            iMap.put(fieldValue, iMap.size());
+            recurseObjects.add(fieldValue);
+        }
     }
 }
