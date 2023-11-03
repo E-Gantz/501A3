@@ -3,3 +3,5 @@ I then realised that the " Allow the user to create one or more objects from a s
 So, my first major refactoring was removing the user's ability to create multiple of the 5 types of objects, which involved removing loops and arraylists, minor renaming, and changing return types. (commit 4)
 My second major refactoring was when I had finished all the functionality for simple objects and started extending what I had to work with objects with references to other objects. 
 This involved adding a new serialize method that didn't create a new document, changing the inspector to go through an object with references, and filling in the object section of the field serialization. (commit 13)
+Next, I extracted some sub methods from deserialize(document) because it was getting a bit long, and it made it easier to work on the object and field parts.
+    Additionally, I created a new method for setting objects such that the main object used one method, and its fields that were objects used a different method for creating those objects. (commit 14)

@@ -1,73 +1,134 @@
 import java.lang.reflect.*;
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import org.jdom2.*;
 
 public class Deserializer {
     IdentityHashMap<Integer,Object> iMap;
+    Object rootObject = null;
+    List<Element> objects;
     
     public Object deserialize(org.jdom2.Document doc){
         //SAXBuilder sax = new SAXBuilder();
-        ArrayList<Object> instances = new ArrayList<Object>();
         iMap = new IdentityHashMap<>();
         Element root = doc.getRootElement();
-        List<Element> objects = root.getChildren();
+        objects = root.getChildren();
         
-        for(Element object : objects){
-            String className = object.getAttributeValue("class");
-            try {
-                Class objClass = Class.forName(className);
-                Constructor c = objClass.getDeclaredConstructor(null);
-                c.setAccessible(true);
-                Object instance = c.newInstance();
-                iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
+        objectSetter(objects.get(0));
+        return rootObject;
+    }
 
-                List<Element> fields = object.getChildren();
-                for(Element field : fields){
-                    String fieldName = field.getAttributeValue("name");
-                    String declaringClass = field.getAttributeValue("declaringclass");
-                    Field fieldObj = instance.getClass().getDeclaredField(fieldName);
-                    Class fType = fieldObj.getType();
-                    if(fType.isArray()){
-                        //array stuff
+    public void objectSetter(Element object){
+        String className = object.getAttributeValue("class");
+        try {
+            Class objClass = Class.forName(className);
+            Constructor c = objClass.getDeclaredConstructor(null);
+            c.setAccessible(true);
+            Object instance = c.newInstance();
+            iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
+
+            List<Element> fields = object.getChildren();
+            for(Element field : fields){
+                fieldSetter(field, instance);
+            }
+            rootObject = instance;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void fieldSetter(Element field, Object instance){
+        String fieldName = field.getAttributeValue("name");
+        String declaringClass = field.getAttributeValue("declaringclass");
+        Field fieldObj;
+        try {
+            fieldObj = instance.getClass().getDeclaredField(fieldName);
+            Class fType = fieldObj.getType();
+
+            if(fType.isArray()){
+                //array stuff
+            }
+            else{
+                if(fType.isPrimitive()){
+                    List<Element> values = field.getChildren();
+                    if(values.size() == 1){
+                        String value = values.get(0).getText();
+                        primFieldSetter(instance, fType, fieldObj, value);
                     }
-                    else{
-                        if(fType.isPrimitive()){
-                            List<Element> values = field.getChildren();
-                            if(values.size() == 1){
-                                String value = values.get(0).getText();
-                                primFieldSetter(instance, fType, fieldObj, value);
-                            }
-                            else {  //should never be run unless I've overlooked something.
-                                System.out.println("This primitive has multiple values for some reason");
-                            }
-                        }
-                        else{
-                            //object stuff
-                        }
+                    else {  //should never be run unless I've overlooked something.
+                        System.out.println("This primitive has multiple values for some reason");
                     }
                 }
-                instances.add(instance);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                else{
+                    int id = Integer.parseInt(field.getChildren().get(0).getText());
+                    if(iMap.get(id) == null){
+                        Object refObject = refObBuilder(id);
+                        iMap.put(id, refObject);
+                        fieldObj.set(instance, refObject);
+                    }
+                    else{
+                        fieldObj.set(instance, iMap.get(id));
+                    }
+                }
+            }
+        } catch (NoSuchFieldException | SecurityException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Object refObBuilder(int id){
+        Element object = null;
+        for(Element obj : objects){
+            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
+                object = obj;
+                break;
             }
         }
-        return instances.get(0);
+        String className = object.getAttributeValue("class");
+        try {
+            Class objClass = Class.forName(className);
+            Constructor c = objClass.getDeclaredConstructor(null);
+            c.setAccessible(true);
+            Object instance = c.newInstance();
+            iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
+
+            List<Element> fields = object.getChildren();
+            for(Element field : fields){
+                fieldSetter(field, instance);
+            }
+            return instance;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void primFieldSetter(Object instance, Class fType, Field fieldObj, String value){
