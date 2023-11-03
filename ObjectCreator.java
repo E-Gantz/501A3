@@ -151,7 +151,7 @@ public class ObjectCreator {
     }
 
     public void createCollection(){
-        object = new CollectionField();
+        object = new CollectionField(1);
     }
 
     //funfact: Boolean.parseBoolean does not throw an exception if the input is neither true nor false, it just defaults to false.
@@ -348,7 +348,7 @@ class ObjArrayOb{
 }
 class CollectionField{
     Stack<Object> stack;
-    CollectionField(){
+    CollectionField(int useless){
         stack = new Stack<Object>();
         refOb2 o2 = new refOb2();
         refOb1 o1 = o2.drEvil;
@@ -357,5 +357,12 @@ class CollectionField{
         stack.push(new primOb());
         stack.push(new primOb(3, 67.8, false));
         stack.push(new CharArrayOb());
+    }
+    CollectionField(){
+        stack = new Stack<Object>();
+        refOb2 o2 = new refOb2();
+        refOb1 o1 = o2.drEvil;
+        stack.push(o1);
+        stack.push(o2);
     }
 }

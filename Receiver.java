@@ -38,7 +38,11 @@ public class Receiver {
     public void reconstruct(org.jdom2.Document doc){
         Deserializer deserializer = new Deserializer();
         Object reconstructed = deserializer.deserialize(doc);
-        Inspector inspectre = new Inspector();
-        inspectre.inspect(reconstructed, true);
+        //Inspector inspectre = new Inspector();
+        //inspectre.inspect(reconstructed, true);
+        Serializer serializer = new Serializer();
+        org.jdom2.Document doc2 = serializer.serialize(reconstructed);
+        System.out.println("Recieved: ");
+        serializer.printDoc(doc2);
     }
 }

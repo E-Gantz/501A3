@@ -82,14 +82,21 @@ public class Deserializer {
                             iMap.put(id, arrayOb);
                             fieldObj.set(instance, arrayOb);
                         }
-                    }
-                    else if(instance instanceof Collection){
-
-                    }
-                    else{
-                        Object refObject = refObBuilder(id);
-                        iMap.put(id, refObject);
-                        fieldObj.set(instance, refObject);
+                    } else {
+                        try {
+                            if(fType.getDeclaredConstructor(null).newInstance() instanceof Collection){
+                                Collection collectionOb = createCollection(fType, id);
+                                iMap.put(id, collectionOb);
+                                fieldObj.set(instance, collectionOb);
+                            }
+                            else{
+                                Object refObject = refObBuilder(id);
+                                iMap.put(id, refObject);
+                                fieldObj.set(instance, refObject);
+                            }
+                        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 else{
@@ -242,5 +249,29 @@ public class Deserializer {
             Array.set(instance, i, elem);
         }
         return instance;
+    }
+
+    public Collection createCollection(Class fType, int id){
+        try {
+            Element object = null;
+            for(Element obj : objects){
+                if(Integer.parseInt(obj.getAttributeValue("id")) == id){
+                    object = obj;
+                    break;
+                }
+            }
+            List<Element> refIds = object.getChildren();
+            int length = Integer.parseInt(object.getAttributeValue("length"));
+            Collection collection = (Collection) fType.getDeclaredConstructor(null).newInstance();
+            for(int i=0; i<length; i++){
+                Object elem = refObBuilder(Integer.parseInt(refIds.get(i).getText()));
+                collection.add(elem);
+            }
+            return collection;
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
