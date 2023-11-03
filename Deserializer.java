@@ -20,18 +20,8 @@ public class Deserializer {
     }
 
     public void objectSetter(Element object){
-        String className = object.getAttributeValue("class");
         try {
-            Class objClass = Class.forName(className);
-            Constructor c = objClass.getDeclaredConstructor(null);
-            c.setAccessible(true);
-            Object instance = c.newInstance();
-            iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
-
-            List<Element> fields = object.getChildren();
-            for(Element field : fields){
-                fieldSetter(field, instance);
-            }
+            Object instance = createNewInstance(object);
             rootObject = instance;
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,23 +84,8 @@ public class Deserializer {
     public Object refObBuilder(int id){
         if(iMap.get(id) == null){
             Element object = findObject(id);
-            String className = object.getAttributeValue("class");
-            try {
-                Class objClass = Class.forName(className);
-                Constructor c = objClass.getDeclaredConstructor(null);
-                c.setAccessible(true);
-                Object instance = c.newInstance();
-                iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
-
-                List<Element> fields = object.getChildren();
-                for(Element field : fields){
-                    fieldSetter(field, instance);
-                }
-                return instance;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
+            Object instance = createNewInstance(object);
+            return instance;
         }
         else{
             return iMap.get(id);
@@ -226,5 +201,24 @@ public class Deserializer {
             }
         }
         return object;
+    }
+
+    public Object createNewInstance(Element object){
+        Object instance = null;
+        try{
+            String className = object.getAttributeValue("class");
+            Class objClass = Class.forName(className);
+            Constructor c = objClass.getDeclaredConstructor(null);
+            c.setAccessible(true);
+            instance = c.newInstance();
+            iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
+            List<Element> fields = object.getChildren();
+            for(Element field : fields){
+                fieldSetter(field, instance);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return instance;
     }
 }

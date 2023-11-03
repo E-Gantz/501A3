@@ -16,3 +16,4 @@ My first step in cleaning up Deserializer was to take any long chains of catches
     The behavior didn't change as I wasn't doing any real error handling with them, but it made the code considerably more readable. Additionally, this would catch any exceptions I had missed by only using specific exceptions.
     (commit 29)
 Next I created a new method findObject for some duplicated code that would find a child element of the document that matched a given id. (commit 30)
+    I then extracted a block of code used to create a new instance of an object and fill in its variables based on the input document into a new method createNewInstance. (commit 31)
