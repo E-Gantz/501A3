@@ -32,7 +32,7 @@ public class ObjectCreator {
             createObArray();
         }
         else if (objChoice == 5){
-            //
+            createCollection();
         }
     }
 
@@ -148,14 +148,9 @@ public class ObjectCreator {
         object = new ObjArrayOb();
     }
 
-    /*public void create//(boolean custom){
-        if (custom){
-            //
-        }
-        else{
-            //object = new //;
-        }
-    }*/
+    public void createCollection(){
+        object = new CollectionField();
+    }
 
     //funfact: Boolean.parseBoolean does not throw an exception if the input is neither true nor false, it just defaults to false.
     public boolean parseBool(String str) throws Exception{
@@ -347,5 +342,11 @@ class ObjArrayOb{
         refOb2 o2 = new refOb2();
         refOb1 o1 = o2.drEvil;
         objArray = new Object[] {o2, o1, new primOb(), new primOb(3, 67.8, false), new CharArrayOb()};
+    }
+}
+class CollectionField{
+    //
+    CollectionField(){
+        //
     }
 }

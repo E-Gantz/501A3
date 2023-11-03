@@ -40,9 +40,15 @@ public class Serializer{
         else {
             object.setAttribute("id", Integer.toString(iMap.get(obj)));
         }
+        if(classObject.isArray()){
+            int length = Array.getLength(obj);
+            object.setAttribute("length", Integer.toString(length));
+            serializeElements(classObject, obj, recurseObjects, object, length);
+        }
+        else{
+            serializeFields(classObject, obj, recurseObjects, object);
+        }
         doc.getRootElement().addContent(object);
-
-        serializeFields(classObject, obj, recurseObjects, object);
     }
 
     public void serializeFields(Class classObject, Object obj, ArrayList<Object> recurseObjects, Element element){
@@ -64,7 +70,18 @@ public class Serializer{
     public void serializeFieldValue(Element fieldElement, Field field, Object obj, ArrayList<Object> recurseObjects){
         Class fType = field.getType();
         if(fType.isArray()){
-            //array stuff
+            try {
+                Object fieldValue = field.get(obj);
+                if(iMap.get(fieldValue) == null){
+                    iMap.put(fieldValue, iMap.size());
+                    recurseObjects.add(fieldValue);
+                }
+                Element refElement = new Element("reference");
+                refElement.setText(Integer.toString(iMap.get(fieldValue)));
+                fieldElement.addContent(refElement);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
         else{
             if(fType.isPrimitive()){
@@ -90,6 +107,20 @@ public class Serializer{
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public void serializeElements(Class classObject, Object obj, ArrayList<Object> recurseObjects, Element element, int length){
+        Class compType = classObject.getComponentType();
+        if(compType.isPrimitive()){
+            for(int i=0; i<length; i++){
+                Element valueElement = new Element("value");
+                valueElement.setText(Array.get(obj, i).toString());
+                element.addContent(valueElement);
+            }
+        }
+        else{
+
         }
     }
 

@@ -106,7 +106,8 @@ public class Inspector {
             System.out.println(Arrays.deepToString((Object[]) field.get(obj)));
             }
             else{
-                System.out.println(Arrays.toString((Object[]) field.get(obj)));
+                Object[] a = Arrays.asList(field.get(obj)).toArray();
+                System.out.println(Arrays.deepToString(a));
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             System.out.println("unable to access");
