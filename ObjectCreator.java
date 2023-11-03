@@ -26,7 +26,7 @@ public class ObjectCreator {
             createRefOb(custom);
         }
         else if (objChoice == 3){
-            //
+            createPrimArray(custom);
         }
         else if (objChoice == 4){
             //
@@ -96,14 +96,53 @@ public class ObjectCreator {
         }
     }
 
-    /*public void create//(boolean custom){
-        if (custom){
-            //
+    public void createPrimArray(boolean custom){
+        while(true){
+            try {
+                tex.showPrimArrayOptions();
+                int choice = tex.chooseIntOption(1, 5);
+                if (custom){
+                    tex.primArrayPrompt();
+                    String input = tex.chooseStringOption();
+                    if(choice == 1){
+                        object = new boolArrayOb(input);
+                    }
+                    else if(choice == 2){
+                        object = new IntArrayOb(input);
+                    }
+                    else if(choice == 3){
+                        object = new shortArrayOb(input);
+                    }
+                    else if(choice == 4){
+                        object = new DoubleArrayOb(input);
+                    }
+                    else if(choice == 5){
+                        object = new CharArrayOb(input);
+                    }
+                }
+                else{
+                    if(choice == 1){
+                        object = new boolArrayOb();
+                    }
+                    else if(choice == 2){
+                        object = new IntArrayOb();
+                    }
+                    else if(choice == 3){
+                        object = new shortArrayOb();
+                    }
+                    else if(choice == 4){
+                        object = new DoubleArrayOb();
+                    }
+                    else if(choice == 5){
+                        object = new CharArrayOb();
+                    }
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("There was a problem processing your input, try again");
+            }
         }
-        else{
-            //object = new //;
-        }
-    }*/
+    }
 
     /*public void create//(boolean custom){
         if (custom){
@@ -231,5 +270,78 @@ class refOb2 extends refOb1{
     public refOb2(primOb prim1, primOb prim2){
         prim = prim2;
         drEvil = new refOb1(this, prim1);
+    }
+}
+
+class boolArrayOb{
+    boolean[] boolarray;
+
+    boolArrayOb(){
+        boolarray = new boolean[] {true, true, true, true, false, false, false, true, false, false, false, true};
+    }
+
+    boolArrayOb(String str){
+        String[] strs = str.trim().split(" ");
+        boolarray = new boolean[strs.length];
+        for(int i=0; i<strs.length; i++){
+            boolarray[i] = Boolean.parseBoolean(strs[i]);
+        }
+    }
+}
+class IntArrayOb{
+    int[] intarray;
+
+    IntArrayOb(){
+        intarray = new int[] {8, 6, 7, 5, 3, 0, 9};
+    }
+
+    IntArrayOb(String str){
+        String[] strs = str.trim().split(" ");
+        intarray = new int[strs.length];
+        for(int i=0; i<strs.length; i++){
+            intarray[i] = Integer.parseInt(strs[i]);
+        }
+    }
+}
+class shortArrayOb{
+    Short[] shortarray;
+
+    shortArrayOb(){
+        shortarray = new Short[] {8, 6, 7, 5, 3, 0, 9};
+    }
+
+    shortArrayOb(String str){
+        String[] strs = str.trim().split(" ");
+        shortarray = new Short[strs.length];
+        for(int i=0; i<strs.length; i++){
+            shortarray[i] = Short.parseShort(strs[i]);
+        }
+    }
+}
+class DoubleArrayOb{
+    Double[] Doublearray;
+
+    DoubleArrayOb(){
+        Doublearray = new Double[] {8.1, 6.2, 7.3, 5.4, 3.5, 0.6, 9.7};
+    }
+
+    DoubleArrayOb(String str){
+        String[] strs = str.trim().split(" ");
+        Doublearray = new Double[strs.length];
+        for(int i=0; i<strs.length; i++){
+            Doublearray[i] = Double.parseDouble(strs[i]);
+        }
+    }
+}
+class CharArrayOb{
+    char[] Chararray;
+
+    CharArrayOb(){
+        Chararray = new char[] {'a', 'e', 'i', 'o', 'u'};
+    }
+
+    CharArrayOb(String str){
+        str.trim().replaceAll(" ", "");
+        Chararray = str.toCharArray();
     }
 }
