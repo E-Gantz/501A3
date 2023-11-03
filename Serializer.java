@@ -54,15 +54,18 @@ public class Serializer{
     public void serializeFields(Class classObject, Object obj, ArrayList<Object> recurseObjects, Element element){
         Field[] fields = classObject.getDeclaredFields();
         for(Field field : fields){
-            Element fieldElement = new Element("field");
-            fieldElement.setAttribute("name",field.getName());
-            fieldElement.setAttribute("declaringclass", classObject.getName());
-            element.addContent(fieldElement);
-            try {
-                field.setAccessible(true);
-                serializeFieldValue(fieldElement, field, obj, recurseObjects);
-            } catch (InaccessibleObjectException e) {
-                fieldElement.setText("Field Inaccessible");
+            int mod = field.getModifiers();
+            if(!Modifier.isStatic(mod)){
+                Element fieldElement = new Element("field");
+                fieldElement.setAttribute("name",field.getName());
+                fieldElement.setAttribute("declaringclass", classObject.getName());
+                element.addContent(fieldElement);
+                try {
+                    field.setAccessible(true);
+                    serializeFieldValue(fieldElement, field, obj, recurseObjects);
+                } catch (InaccessibleObjectException e) {
+                    fieldElement.setText("Field Inaccessible");
+                }
             }
         }
     }
