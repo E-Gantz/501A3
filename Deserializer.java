@@ -93,13 +93,7 @@ public class Deserializer {
 
     public Object refObBuilder(int id){
         if(iMap.get(id) == null){
-            Element object = null;
-            for(Element obj : objects){
-                if(Integer.parseInt(obj.getAttributeValue("id")) == id){
-                    object = obj;
-                    break;
-                }
-            }
+            Element object = findObject(id);
             String className = object.getAttributeValue("class");
             try {
                 Class objClass = Class.forName(className);
@@ -158,13 +152,7 @@ public class Deserializer {
     }
 
     public Object setPrimArray(Class fType, int id){
-        Element object = null;
-        for(Element obj : objects){
-            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
-                object = obj;
-                break;
-            }
-        }
+        Element object = findObject(id);
         List<Element> values = object.getChildren();
         int length = Integer.parseInt(object.getAttributeValue("length"));
         Object instance = Array.newInstance(fType, length);
@@ -201,13 +189,7 @@ public class Deserializer {
     }
 
     public Object setRefArray(Class fType, int id){
-        Element object = null;
-        for(Element obj : objects){
-            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
-                object = obj;
-                break;
-            }
-        }
+        Element object = findObject(id);
         List<Element> refIds = object.getChildren();
         int length = Integer.parseInt(object.getAttributeValue("length"));
         Object instance = Array.newInstance(fType, length);
@@ -220,13 +202,7 @@ public class Deserializer {
 
     public Collection createCollection(Class fType, int id){
         try {
-            Element object = null;
-            for(Element obj : objects){
-                if(Integer.parseInt(obj.getAttributeValue("id")) == id){
-                    object = obj;
-                    break;
-                }
-            }
+            Element object = findObject(id);
             List<Element> refIds = object.getChildren();
             int length = Integer.parseInt(object.getAttributeValue("length"));
             Collection collection = (Collection) fType.getDeclaredConstructor(null).newInstance();
@@ -239,5 +215,16 @@ public class Deserializer {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Element findObject(int id){
+        Element object = null;
+        for(Element obj : objects){
+            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
+                object = obj;
+                break;
+            }
+        }
+        return object;
     }
 }
