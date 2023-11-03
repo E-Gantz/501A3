@@ -6,16 +6,14 @@ import org.jdom2.*;
 
 public class Deserializer {
     IdentityHashMap<Integer,Object> iMap;
-    Object rootObject = null;
     List<Element> objects;
     
     public Object deserialize(org.jdom2.Document doc){
-        //SAXBuilder sax = new SAXBuilder();
         iMap = new IdentityHashMap<>();
         Element root = doc.getRootElement();
         objects = root.getChildren();
         
-        rootObject = objectSetter(0);
+        Object rootObject = objectSetter(0);
         return rootObject;
     }
 
@@ -33,54 +31,46 @@ public class Deserializer {
     public void fieldSetter(Element field, Object instance){
         String fieldName = field.getAttributeValue("name");
         String declaringClass = field.getAttributeValue("declaringclass");
-        Field fieldObj;
         try {
-            fieldObj = instance.getClass().getDeclaredField(fieldName);
+            Field fieldObj = instance.getClass().getDeclaredField(fieldName);
             Class fType = fieldObj.getType();
             if(fType.isPrimitive()){
                 List<Element> values = field.getChildren();
-                if(values.size() == 1){
-                    String value = values.get(0).getText();
-                    primFieldSetter(instance, fType, fieldObj, value);
-                }
-                else {  //should never be run unless I've overlooked something.
-                    System.out.println("This primitive has multiple values for some reason");
-                }
+                String value = values.get(0).getText();
+                primFieldSetter(instance, fType, fieldObj, value);
             }
             else{
                 int id = Integer.parseInt(field.getChildren().get(0).getText());
                 if(iMap.get(id) == null){
-                    if(fType.isArray()){
-                        Class compType = fType.getComponentType();
-                        if(compType.isPrimitive()){
-                            Object arrayOb = setPrimArray(compType, id);
-                            iMap.put(id, arrayOb);
-                            fieldObj.set(instance, arrayOb);
-                        }
-                        else{
-                            Object arrayOb = setRefArray(compType, id);
-                            iMap.put(id, arrayOb);
-                            fieldObj.set(instance, arrayOb);
-                        }
-                    } 
-                    else if(fType.getDeclaredConstructor(null).newInstance() instanceof Collection){
+                    //array check is for lazy evaluation to avoid making an instance of something like a char array.
+                    if(!fType.isArray() && fType.getDeclaredConstructor(null).newInstance() instanceof Collection){
                         Collection collectionOb = createCollection(fType, id);
                         iMap.put(id, collectionOb);
                         fieldObj.set(instance, collectionOb);
                     }
                     else{
-                        Object refObject = objectSetter(id);
-                        iMap.put(id, refObject);
-                        fieldObj.set(instance, refObject);
+                        Object toSet = null;
+                        if(fType.isArray()){
+                            Class compType = fType.getComponentType();
+                            if(compType.isPrimitive()){
+                                toSet = setPrimArray(compType, id);
+                            }
+                            else{
+                                toSet = setRefArray(compType, id);
+                            }
+                        }
+                        else{
+                            toSet = objectSetter(id);
+                        }
+                        iMap.put(id, toSet);
+                        fieldObj.set(instance, toSet);
                     }
                 }
                 else{
                     fieldObj.set(instance, iMap.get(id));
                 }
             }
-        } catch (Exception e) {
-                e.printStackTrace();
-        }
+        } catch (Exception e) {e.printStackTrace();}
     }
 
     
@@ -114,9 +104,7 @@ public class Deserializer {
             else if(fType.getName().equals("Void")){
                 //fieldObj.set(instance, null);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {e.printStackTrace();}
     }
 
     public Object setPrimArray(Class fType, int id){
@@ -179,9 +167,7 @@ public class Deserializer {
                 collection.add(elem);
             }
             return collection;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {e.printStackTrace();}
         return null;
     }
 
@@ -209,9 +195,7 @@ public class Deserializer {
             for(Element field : fields){
                 fieldSetter(field, instance);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {e.printStackTrace();}
         return instance;
     }
 }
