@@ -8,3 +8,5 @@ Next, I extracted some sub methods from deserialize(document) because it was get
 I didn't do much more refactoring until after I finished serialization and deserialization for all 5 object types, so post-commit 24 (commit 24)
 At this point my serializer and deserializer were both fairly stinky, mostly due to duplicated code.
 I started the clean up process by combining the array and object behavior in the Serializer.serializeFieldValue method, because it was the exact same code in two different places. (commit 26)
+Then I noticed that my code did the exact same 3 steps in a few different places: create a value/reference element for an object, set its text to something, add it to the object its inside of.
+    So I extracted a new method addRefValElement and moved these steps into it so I could call that instead of using duplicate code (commit 27)

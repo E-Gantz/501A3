@@ -79,13 +79,13 @@ public class Serializer{
     public void serializeFieldValue(Element fieldElement, Field field, Object obj, ArrayList<Object> recurseObjects){
         Class fType = field.getType();
         if(fType.isPrimitive()){
-            Element valueElement = new Element("value");
-            fieldElement.addContent(valueElement);
+            String text = null;
             try {
-                valueElement.setText(field.get(obj).toString());
+                text = field.get(obj).toString();
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                valueElement.setText("Unreachable");
+                text = "Unreachable";
             }
+            addRefValElement("value", text, fieldElement);
         }
         else{
             try {
@@ -94,9 +94,7 @@ public class Serializer{
                     iMap.put(fieldValue, iMap.size());
                     recurseObjects.add(fieldValue);
                 }
-                Element refElement = new Element("reference");
-                refElement.setText(Integer.toString(iMap.get(fieldValue)));
-                fieldElement.addContent(refElement);
+                addRefValElement("reference", Integer.toString(iMap.get(fieldValue)), fieldElement);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -107,9 +105,7 @@ public class Serializer{
         Class compType = classObject.getComponentType();
         if(compType.isPrimitive()){
             for(int i=0; i<length; i++){
-                Element valueElement = new Element("value");
-                valueElement.setText(Array.get(obj, i).toString());
-                element.addContent(valueElement);
+                addRefValElement("value", Array.get(obj, i).toString(), element);
             }
         }
         else{
@@ -119,9 +115,7 @@ public class Serializer{
                     iMap.put(fieldValue, iMap.size());
                     recurseObjects.add(fieldValue);
                 }
-                Element refElement = new Element("reference");
-                refElement.setText(Integer.toString(iMap.get(fieldValue)));
-                element.addContent(refElement);
+                addRefValElement("reference", Integer.toString(iMap.get(fieldValue)), element);
             }
         }
     }
@@ -132,14 +126,18 @@ public class Serializer{
                 iMap.put(fieldValue, iMap.size());
                 recurseObjects.add(fieldValue);
             }
-            Element refElement = new Element("reference");
-            refElement.setText(Integer.toString(iMap.get(fieldValue)));
-            element.addContent(refElement);
+            addRefValElement("reference", Integer.toString(iMap.get(fieldValue)), element);
         }
     }
 
     public void printDoc(org.jdom2.Document doc){
         XMLOutputter xmlOut = new XMLOutputter(Format.getPrettyFormat());
         System.out.println(xmlOut.outputString(doc));
+    }
+
+    public void addRefValElement(String elemName, String elemText, Element parent){
+        Element refVal = new Element(elemName);
+        refVal.setText(elemText);
+        parent.addContent(refVal);
     }
 }
