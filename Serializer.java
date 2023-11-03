@@ -78,7 +78,16 @@ public class Serializer{
 
     public void serializeFieldValue(Element fieldElement, Field field, Object obj, ArrayList<Object> recurseObjects){
         Class fType = field.getType();
-        if(fType.isArray()){
+        if(fType.isPrimitive()){
+            Element valueElement = new Element("value");
+            fieldElement.addContent(valueElement);
+            try {
+                valueElement.setText(field.get(obj).toString());
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                valueElement.setText("Unreachable");
+            }
+        }
+        else{
             try {
                 Object fieldValue = field.get(obj);
                 if(iMap.get(fieldValue) == null){
@@ -90,31 +99,6 @@ public class Serializer{
                 fieldElement.addContent(refElement);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 e.printStackTrace();
-            }
-        }
-        else{
-            if(fType.isPrimitive()){
-                Element valueElement = new Element("value");
-                fieldElement.addContent(valueElement);
-                try {
-                    valueElement.setText(field.get(obj).toString());
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    valueElement.setText("Unreachable");
-                }
-            }
-            else{
-                try {
-                    Object fieldValue = field.get(obj);
-                    if(iMap.get(fieldValue) == null){
-                        iMap.put(fieldValue, iMap.size());
-                        recurseObjects.add(fieldValue);
-                    }
-                    Element refElement = new Element("reference");
-                    refElement.setText(Integer.toString(iMap.get(fieldValue)));
-                    fieldElement.addContent(refElement);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }

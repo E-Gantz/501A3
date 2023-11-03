@@ -6,3 +6,5 @@ This involved adding a new serialize method that didn't create a new document, c
 Next, I extracted some sub methods from deserialize(document) because it was getting a bit long, and it made it easier to work on the object and field parts.
     Additionally, I created a new method for setting objects such that the main object used one method, and its fields that were objects used a different method for creating those objects. (commit 14)
 I didn't do much more refactoring until after I finished serialization and deserialization for all 5 object types, so post-commit 24 (commit 24)
+At this point my serializer and deserializer were both fairly stinky, mostly due to duplicated code.
+I started the clean up process by combining the array and object behavior in the Serializer.serializeFieldValue method, because it was the exact same code in two different places. (commit 26)
