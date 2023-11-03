@@ -29,7 +29,7 @@ public class ObjectCreator {
             createPrimArray(custom);
         }
         else if (objChoice == 4){
-            //
+            createObArray();
         }
         else if (objChoice == 5){
             //
@@ -144,14 +144,9 @@ public class ObjectCreator {
         }
     }
 
-    /*public void create//(boolean custom){
-        if (custom){
-            //
-        }
-        else{
-            //object = new //;
-        }
-    }*/
+    public void createObArray(){
+        object = new ObjArrayOb();
+    }
 
     /*public void create//(boolean custom){
         if (custom){
@@ -343,5 +338,14 @@ class CharArrayOb{
     CharArrayOb(String str){
         str.trim().replaceAll(" ", "");
         Chararray = str.toCharArray();
+    }
+}
+class ObjArrayOb{
+    Object[] objArray;
+
+    ObjArrayOb(){
+        refOb2 o2 = new refOb2();
+        refOb1 o1 = o2.drEvil;
+        objArray = new Object[] {o2, o1, new primOb(), new primOb(3, 67.8, false), new CharArrayOb()};
     }
 }
