@@ -1,4 +1,5 @@
 import java.lang.reflect.*;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import org.jdom2.*;
@@ -56,31 +57,41 @@ public class Deserializer {
         try {
             fieldObj = instance.getClass().getDeclaredField(fieldName);
             Class fType = fieldObj.getType();
-
-            if(fType.isArray()){
-                //array stuff
+            if(fType.isPrimitive()){
+                List<Element> values = field.getChildren();
+                if(values.size() == 1){
+                    String value = values.get(0).getText();
+                    primFieldSetter(instance, fType, fieldObj, value);
+                }
+                else {  //should never be run unless I've overlooked something.
+                    System.out.println("This primitive has multiple values for some reason");
+                }
             }
             else{
-                if(fType.isPrimitive()){
-                    List<Element> values = field.getChildren();
-                    if(values.size() == 1){
-                        String value = values.get(0).getText();
-                        primFieldSetter(instance, fType, fieldObj, value);
+                int id = Integer.parseInt(field.getChildren().get(0).getText());
+                if(iMap.get(id) == null){
+                    if(fType.isArray()){
+                        Class compType = fType.getComponentType();
+                        if(compType.isPrimitive()){
+                            Object arrayOb = setPrimArray(compType, id);
+                            iMap.put(id, arrayOb);
+                            fieldObj.set(instance, arrayOb);
+                        }
+                        else{
+                            //array of objects
+                        }
                     }
-                    else {  //should never be run unless I've overlooked something.
-                        System.out.println("This primitive has multiple values for some reason");
+                    else if(instance instanceof Collection){
+
                     }
-                }
-                else{
-                    int id = Integer.parseInt(field.getChildren().get(0).getText());
-                    if(iMap.get(id) == null){
+                    else{
                         Object refObject = refObBuilder(id);
                         iMap.put(id, refObject);
                         fieldObj.set(instance, refObject);
                     }
-                    else{
-                        fieldObj.set(instance, iMap.get(id));
-                    }
+                }
+                else{
+                    fieldObj.set(instance, iMap.get(id));
                 }
             }
         } catch (NoSuchFieldException | SecurityException e) {
@@ -163,5 +174,48 @@ public class Deserializer {
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public Object setPrimArray(Class fType, int id){
+        Element object = null;
+        for(Element obj : objects){
+            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
+                object = obj;
+                break;
+            }
+        }
+        List<Element> values = object.getChildren();
+        int length = Integer.parseInt(object.getAttributeValue("length"));
+        Object instance = Array.newInstance(fType, length);
+        for(int i=0; i<length; i++){
+            if(fType.getName().equals("int")){
+                Array.setInt(instance, i, Integer.parseInt(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("boolean")){
+                Array.setBoolean(instance, i, Boolean.parseBoolean(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("byte")){
+                Array.setByte(instance, i, Byte.parseByte(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("short")){
+                Array.setShort(instance, i, Short.parseShort(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("long")){
+                Array.setLong(instance, i, Long.parseLong(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("float")){
+                Array.setFloat(instance, i, Float.parseFloat(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("double")){
+                Array.setDouble(instance, i, Double.parseDouble(values.get(i).getText()));
+            }
+            else if(fType.getName().equals("char")){
+                Array.setChar(instance, i, values.get(i).getText().charAt(0));
+            }
+            else if(fType.getName().equals("Void")){
+                //fieldObj.set(instance, null);
+            }
+        }
+        return instance;
     }
 }
