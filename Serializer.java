@@ -120,7 +120,16 @@ public class Serializer{
             }
         }
         else{
-
+            for(int i=0; i<length; i++){
+                Object fieldValue = Array.get(obj, i);
+                if(iMap.get(fieldValue) == null){
+                    iMap.put(fieldValue, iMap.size());
+                    recurseObjects.add(fieldValue);
+                }
+                Element refElement = new Element("reference");
+                refElement.setText(Integer.toString(iMap.get(fieldValue)));
+                element.addContent(refElement);
+            }
         }
     }
 

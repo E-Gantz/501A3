@@ -40,9 +40,9 @@ public class TextUI {
         System.out.println("You may choose to create one of the following objects:");
         System.out.println("1. primOb: A simple object with only primitives for instance variables.");
         System.out.println("2. refOb2: An object that contains references to a primOb and its parent, refOb1 (which has a reference to its child refOb2 and its own primOb)");
-        System.out.println("3. ___ArrayOb: An object that contains a primitive array, you can choose from several types.");
-        System.out.println("4. placeholder: An object that contains an array of object references.");
-        System.out.println("5. placeholder: An object that uses an instance of one of Java\'s collection classes to refer to several other objects");
+        System.out.println("3. <type>ArrayOb: An object that contains a primitive array, you can choose from several types.");
+        System.out.println("4. ObjArrayOb: An object that contains an array of object references.");
+        System.out.println("5. CollectionField: An object that uses an instance of one of Java\'s collection classes to refer to several other objects");
         System.out.println("Please enter the number that corresponds to the object you would like to create");
     }
 
