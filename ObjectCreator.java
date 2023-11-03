@@ -334,7 +334,11 @@ class CharArrayOb{
 
     CharArrayOb(String str){
         str.trim().replaceAll(" ", "");
-        Chararray = str.toCharArray();
+        String[] strs = str.split(" ");
+        Chararray = new char[strs.length];
+        for(int i=0; i<strs.length; i++){
+            Chararray[i] = strs[i].charAt(0);
+        }
     }
 }
 class ObjArrayOb{
