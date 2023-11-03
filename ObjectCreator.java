@@ -296,30 +296,30 @@ class IntArrayOb{
     }
 }
 class shortArrayOb{
-    Short[] shortarray;
+    short[] shortarray;
 
     shortArrayOb(){
-        shortarray = new Short[] {8, 6, 7, 5, 3, 0, 9};
+        shortarray = new short[] {8, 6, 7, 5, 3, 0, 9};
     }
 
     shortArrayOb(String str){
         String[] strs = str.trim().split(" ");
-        shortarray = new Short[strs.length];
+        shortarray = new short[strs.length];
         for(int i=0; i<strs.length; i++){
             shortarray[i] = Short.parseShort(strs[i]);
         }
     }
 }
 class DoubleArrayOb{
-    Double[] Doublearray;
+    double[] Doublearray;
 
     DoubleArrayOb(){
-        Doublearray = new Double[] {8.1, 6.2, 7.3, 5.4, 3.5, 0.6, 9.7};
+        Doublearray = new double[] {8.1, 6.2, 7.3, 5.4, 3.5, 0.6, 9.7};
     }
 
     DoubleArrayOb(String str){
         String[] strs = str.trim().split(" ");
-        Doublearray = new Double[strs.length];
+        Doublearray = new double[strs.length];
         for(int i=0; i<strs.length; i++){
             Doublearray[i] = Double.parseDouble(strs[i]);
         }

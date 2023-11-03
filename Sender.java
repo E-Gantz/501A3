@@ -9,8 +9,19 @@ import org.jdom2.output.XMLOutputter;
 public class Sender {
     public static void main(String[] args) {
         Sender sender = new Sender();
+        TextUI tex = new TextUI();
+        while(true){
         org.jdom2.Document doc = sender.createAndSerialize();
         sender.send(doc);
+        tex.goAgain();
+        int choice = tex.chooseIntOption(1, 2);
+        if(choice == 2){
+            doc = null;
+            try {
+                sender.send(doc);
+            } catch (NullPointerException e) {}
+            break;}
+        }
     }
 
     public org.jdom2.Document createAndSerialize(){

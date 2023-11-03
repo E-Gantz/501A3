@@ -2,6 +2,8 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 
@@ -17,6 +19,7 @@ public class Receiver {
         int port = 2023;
         try {
             ServerSocket serverSocket = new ServerSocket(port);
+            while(true){
             Socket socket = serverSocket.accept();
 
             InputStream inputStream = socket.getInputStream();
@@ -25,12 +28,14 @@ public class Receiver {
             SAXBuilder saxBuilder = new SAXBuilder();
             Document doc = saxBuilder.build(bufferedInputStream);
 
-            bufferedInputStream.close();
+            /*bufferedInputStream.close();
             socket.close();
-            serverSocket.close();
+            serverSocket.close();*/
 
             reconstruct(doc);
-        } catch (Exception e) {
+            }
+        } catch (SocketException e){} 
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

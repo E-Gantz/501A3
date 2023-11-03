@@ -76,5 +76,8 @@ public class TextUI {
         System.out.println("Please enter the elements of the array, separated by spaces");
     }
 
-    //show custom input instructions for the other 4 object types here
+    public void goAgain(){
+        System.out.println("Would you like to create another object?");
+        System.out.println("Please enter 1 for yes or 2 for no");
+    }
 }
