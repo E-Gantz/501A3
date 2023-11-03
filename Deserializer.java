@@ -33,19 +33,7 @@ public class Deserializer {
                 fieldSetter(field, instance);
             }
             rootObject = instance;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -82,33 +70,24 @@ public class Deserializer {
                             iMap.put(id, arrayOb);
                             fieldObj.set(instance, arrayOb);
                         }
-                    } else {
-                        try {
-                            if(fType.getDeclaredConstructor(null).newInstance() instanceof Collection){
-                                Collection collectionOb = createCollection(fType, id);
-                                iMap.put(id, collectionOb);
-                                fieldObj.set(instance, collectionOb);
-                            }
-                            else{
-                                Object refObject = refObBuilder(id);
-                                iMap.put(id, refObject);
-                                fieldObj.set(instance, refObject);
-                            }
-                        } catch (InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
+                    } 
+                    else if(fType.getDeclaredConstructor(null).newInstance() instanceof Collection){
+                        Collection collectionOb = createCollection(fType, id);
+                        iMap.put(id, collectionOb);
+                        fieldObj.set(instance, collectionOb);
+                    }
+                    else{
+                        Object refObject = refObBuilder(id);
+                        iMap.put(id, refObject);
+                        fieldObj.set(instance, refObject);
                     }
                 }
                 else{
                     fieldObj.set(instance, iMap.get(id));
                 }
             }
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+                e.printStackTrace();
         }
     }
 
@@ -134,19 +113,7 @@ public class Deserializer {
                     fieldSetter(field, instance);
                 }
                 return instance;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -185,7 +152,7 @@ public class Deserializer {
             else if(fType.getName().equals("Void")){
                 //fieldObj.set(instance, null);
             }
-        } catch (IllegalArgumentException | IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -268,8 +235,7 @@ public class Deserializer {
                 collection.add(elem);
             }
             return collection;
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

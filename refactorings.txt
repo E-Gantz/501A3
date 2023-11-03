@@ -11,3 +11,7 @@ I started the clean up process by combining the array and object behavior in the
 Then I noticed that my code did the exact same 3 steps in a few different places: create a value/reference element for an object, set its text to something, add it to the object its inside of.
     So I extracted a new method addRefValElement and moved these steps into it so I could call that instead of using duplicate code (commit 27)
     I then did the same with a new method checkAndAdd for the recurring steps "if iMap doesn't have a key for this object, add it and put it in the list to be serialized" (commit 28)
+    At this point I was happy with Serializer and moved on to Deserializer 
+My first step in cleaning up Deserializer was to take any long chains of catches for specific exceptions that were using the same behavior (just printing stack trace) and combine them into one catch for a general exception. 
+    The behavior didn't change as I wasn't doing any real error handling with them, but it made the code considerably more readable. Additionally, this would catch any exceptions I had missed by only using specific exceptions.
+    (commit 29)
