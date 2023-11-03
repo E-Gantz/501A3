@@ -78,7 +78,9 @@ public class Deserializer {
                             fieldObj.set(instance, arrayOb);
                         }
                         else{
-                            //array of objects
+                            Object arrayOb = setRefArray(compType, id);
+                            iMap.put(id, arrayOb);
+                            fieldObj.set(instance, arrayOb);
                         }
                     }
                     else if(instance instanceof Collection){
@@ -104,42 +106,47 @@ public class Deserializer {
     }
 
     public Object refObBuilder(int id){
-        Element object = null;
-        for(Element obj : objects){
-            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
-                object = obj;
-                break;
+        if(iMap.get(id) == null){
+            Element object = null;
+            for(Element obj : objects){
+                if(Integer.parseInt(obj.getAttributeValue("id")) == id){
+                    object = obj;
+                    break;
+                }
             }
-        }
-        String className = object.getAttributeValue("class");
-        try {
-            Class objClass = Class.forName(className);
-            Constructor c = objClass.getDeclaredConstructor(null);
-            c.setAccessible(true);
-            Object instance = c.newInstance();
-            iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
+            String className = object.getAttributeValue("class");
+            try {
+                Class objClass = Class.forName(className);
+                Constructor c = objClass.getDeclaredConstructor(null);
+                c.setAccessible(true);
+                Object instance = c.newInstance();
+                iMap.put(Integer.parseInt(object.getAttributeValue("id")), instance);
 
-            List<Element> fields = object.getChildren();
-            for(Element field : fields){
-                fieldSetter(field, instance);
+                List<Element> fields = object.getChildren();
+                for(Element field : fields){
+                    fieldSetter(field, instance);
+                }
+                return instance;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
-            return instance;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
+        else{
+            return iMap.get(id);
+        }
     }
 
     public void primFieldSetter(Object instance, Class fType, Field fieldObj, String value){
@@ -215,6 +222,24 @@ public class Deserializer {
             else if(fType.getName().equals("Void")){
                 //fieldObj.set(instance, null);
             }
+        }
+        return instance;
+    }
+
+    public Object setRefArray(Class fType, int id){
+        Element object = null;
+        for(Element obj : objects){
+            if(Integer.parseInt(obj.getAttributeValue("id")) == id){
+                object = obj;
+                break;
+            }
+        }
+        List<Element> refIds = object.getChildren();
+        int length = Integer.parseInt(object.getAttributeValue("length"));
+        Object instance = Array.newInstance(fType, length);
+        for(int i=0; i<length; i++){
+            Object elem = refObBuilder(Integer.parseInt(refIds.get(i).getText()));
+            Array.set(instance, i, elem);
         }
         return instance;
     }

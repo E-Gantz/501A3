@@ -90,6 +90,7 @@ public class ObjectCreator {
                 primOb prim1 = createPrimOb();
                 primOb prim2 = createPrimOb();
                 object = new refOb2(prim1, prim2);
+                break;
             }
         }
         else{
