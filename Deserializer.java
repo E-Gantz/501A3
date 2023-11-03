@@ -15,16 +15,18 @@ public class Deserializer {
         Element root = doc.getRootElement();
         objects = root.getChildren();
         
-        objectSetter(objects.get(0));
+        rootObject = objectSetter(0);
         return rootObject;
     }
 
-    public void objectSetter(Element object){
-        try {
+    public Object objectSetter(int id){
+        if(iMap.get(id) == null){
+            Element object = findObject(id);
             Object instance = createNewInstance(object);
-            rootObject = instance;
-        } catch (Exception e) {
-            e.printStackTrace();
+            return instance;
+        }
+        else{
+            return iMap.get(id);
         }
     }
 
@@ -67,7 +69,7 @@ public class Deserializer {
                         fieldObj.set(instance, collectionOb);
                     }
                     else{
-                        Object refObject = refObBuilder(id);
+                        Object refObject = objectSetter(id);
                         iMap.put(id, refObject);
                         fieldObj.set(instance, refObject);
                     }
@@ -81,16 +83,7 @@ public class Deserializer {
         }
     }
 
-    public Object refObBuilder(int id){
-        if(iMap.get(id) == null){
-            Element object = findObject(id);
-            Object instance = createNewInstance(object);
-            return instance;
-        }
-        else{
-            return iMap.get(id);
-        }
-    }
+    
 
     public void primFieldSetter(Object instance, Class fType, Field fieldObj, String value){
         try {
@@ -169,7 +162,7 @@ public class Deserializer {
         int length = Integer.parseInt(object.getAttributeValue("length"));
         Object instance = Array.newInstance(fType, length);
         for(int i=0; i<length; i++){
-            Object elem = refObBuilder(Integer.parseInt(refIds.get(i).getText()));
+            Object elem = objectSetter(Integer.parseInt(refIds.get(i).getText()));
             Array.set(instance, i, elem);
         }
         return instance;
@@ -182,7 +175,7 @@ public class Deserializer {
             int length = Integer.parseInt(object.getAttributeValue("length"));
             Collection collection = (Collection) fType.getDeclaredConstructor(null).newInstance();
             for(int i=0; i<length; i++){
-                Object elem = refObBuilder(Integer.parseInt(refIds.get(i).getText()));
+                Object elem = objectSetter(Integer.parseInt(refIds.get(i).getText()));
                 collection.add(elem);
             }
             return collection;

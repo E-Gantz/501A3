@@ -17,3 +17,4 @@ My first step in cleaning up Deserializer was to take any long chains of catches
     (commit 29)
 Next I created a new method findObject for some duplicated code that would find a child element of the document that matched a given id. (commit 30)
     I then extracted a block of code used to create a new instance of an object and fill in its variables based on the input document into a new method createNewInstance. (commit 31)
+    I then noticed that the builder i was using for the root object and reference objects were now pretty much the same, so I combined them into one objectSetter method. (commit 32)
